@@ -6,6 +6,6 @@ whisper_only:
 
 restrict_to_groups:
   default: ""
-  type: list
+  type: groups
   label: "Restrict to groups"
-  description: "Enter one or more group names (comma-separated) to limit the warning to members of those groups. Leave blank to show for all users who can whisper."
+  description: "Limit the warning to members of specific groups. Leave empty to show for all users who can whisper."

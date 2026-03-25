@@ -52,10 +52,11 @@ export default class WhisperWarning extends Component {
     // If one or more groups are specified, user must be a member of at least one
     const restrictToGroups = settings.restrict_to_groups
       ?.split(",")
-      .map((g) => g.trim())
+      .map((g) => g.trim().toLowerCase())
       .filter(Boolean);
     if (restrictToGroups?.length > 0) {
-      const userGroupNames = this.currentUser.groups?.map((g) => g.name) ?? [];
+      const userGroupNames =
+        this.currentUser.groups?.map((g) => g.name.toLowerCase()) ?? [];
       const inGroup = restrictToGroups.some((g) => userGroupNames.includes(g));
       if (!inGroup) {
         return false;

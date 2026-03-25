@@ -10,25 +10,6 @@ export default class WhisperWarning extends Component {
   @service composer;
 
   get showWarning() {
-    // checks if the current user is replying in a group PM
-    const allowedGroups =
-      this.args.outletArgs.model.topic?.get("allowedGroups");
-    // to check if reply is in a PM
-    const isPM =
-      this.args.outletArgs.model.topic?.get("archetype") === "private_message";
-    // checks to make sure user is in group that PM is added to
-    const isInInboxGroup = allowedGroups
-      ? this.currentUser.groups?.filter((group) => {
-          for (let allowedGroup of allowedGroups) {
-            if (group.name === allowedGroup.name) {
-              return group;
-            }
-          }
-        }).length > 0
-      : false;
-
-    const readRestricted =
-      this.args.outletArgs.model.category?.get("read_restricted");
     const canWhisper = this.composer.showWhisperToggle;
     const isNotNewTopic =
       this.args.outletArgs.model.get("action") !== "createTopic";
@@ -37,20 +18,11 @@ export default class WhisperWarning extends Component {
     const isNotSharedDraft =
       this.args.outletArgs.model.get("action") !== "createSharedDraft";
 
-    const contextMatches =
-      (canWhisper &&
-        isNotNewTopic &&
-        isNotNewPM &&
-        isNotSharedDraft &&
-        readRestricted) ||
-      (isPM && isInInboxGroup && canWhisper);
-
-    if (!contextMatches) {
+    if (!canWhisper || !isNotNewTopic || !isNotNewPM || !isNotSharedDraft) {
       return false;
     }
 
     // If one or more groups are specified, user must be a member of at least one
-    // list type stores comma-separated group names e.g. "staff,moderators"
     const restrictToGroups = settings.restrict_to_groups
       ?.split(",")
       .map((g) => g.trim().toLowerCase())

@@ -1,20 +1,4 @@
-/*
-  Whisper Warning — Color Customization
-  ======================================
-  To override button colors, add CSS to your theme's "Custom CSS" field
-  targeting the following selectors:
-
-  Whisper state (default: tertiary theme color):
-    #reply-control .reply-to .whisper-hint.whispering { }
-    #reply-control .reply-to .whisper-hint.whispering .d-icon { }
-
-  Public reply state (default: gold):
-    #reply-control .reply-to .whisper-hint.public { }
-    #reply-control .reply-to .whisper-hint.public .d-icon { }
-
-  Available properties: color, background-color, box-shadow
-*/
-
+/* stylelint-disable scss/no-global-function-names */
 #reply-control .reply-to .whisper-hint {
   margin: 0 0 0 1em;
   padding: 2px 8px;
@@ -34,8 +18,8 @@
   }
 
   &.public {
-    color: #7a5800;
+    color: darken($color: goldenrod, $amount: 20);
     background-color: gold;
-    box-shadow: 0 0 0 2px #b8860b;
+    box-shadow: 0 0 0 2px darken($color: goldenrod, $amount: 5);
   }
 }

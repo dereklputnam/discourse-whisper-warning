@@ -50,14 +50,15 @@ export default class WhisperWarning extends Component {
     }
 
     // If one or more groups are specified, user must be a member of at least one
-    // type: groups stores pipe-delimited group IDs e.g. "1|14"
+    // list type stores comma-separated group names e.g. "staff,moderators"
     const restrictToGroups = settings.restrict_to_groups
-      ?.split("|")
-      .map((id) => parseInt(id, 10))
+      ?.split(",")
+      .map((g) => g.trim().toLowerCase())
       .filter(Boolean);
     if (restrictToGroups?.length > 0) {
-      const userGroupIds = this.currentUser.groups?.map((g) => g.id) ?? [];
-      const inGroup = restrictToGroups.some((id) => userGroupIds.includes(id));
+      const userGroupNames =
+        this.currentUser.groups?.map((g) => g.name.toLowerCase()) ?? [];
+      const inGroup = restrictToGroups.some((g) => userGroupNames.includes(g));
       if (!inGroup) {
         return false;
       }

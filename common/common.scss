@@ -11,14 +11,14 @@
   }
 
   &.whispering {
-    color: var(--tertiary);
-    background-color: var(--tertiary-low);
-    box-shadow: 0 0 0 2px var(--tertiary-medium);
+    color: var(--success);
+    background-color: var(--success-low);
+    box-shadow: 0 0 0 2px var(--success-medium);
   }
 
   &.public {
-    color: var(--highlight-high);
-    background-color: var(--highlight-low);
-    box-shadow: 0 0 0 2px var(--highlight-medium);
+    color: var(--danger);
+    background-color: var(--danger-low);
+    box-shadow: 0 0 0 2px var(--danger-medium);
   }
 }

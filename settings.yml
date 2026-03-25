@@ -3,24 +3,3 @@ whisper_only:
   type: bool
   label: "Whisper only"
   description: "Only show the warning button when composing a whisper; hide it for public replies."
-
-whisper_color:
-  default: "theme"
-  type: enum
-  label: "Whisper button color"
-  choices:
-    - theme
-    - purple
-    - blue
-    - yellow
-
-public_color:
-  default: "gold"
-  type: enum
-  label: "Public reply button color"
-  choices:
-    - gold
-    - green
-    - blue
-    - red
-    - orange

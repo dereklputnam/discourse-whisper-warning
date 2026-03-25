@@ -22,19 +22,21 @@ export default class WhisperWarning extends Component {
       return false;
     }
 
-    // If one or more groups are specified, user must be a member of at least one
-    const restrictToGroups = settings.restrict_to_groups
-      ?.split(",")
-      .map((g) => g.trim().toLowerCase())
-      .filter(Boolean);
-    if (restrictToGroups?.length > 0) {
-      const userGroupNames =
-        this.currentUser.groups?.map((g) => g.name.toLowerCase()) ?? [];
-      const inGroup = restrictToGroups.some((g) => userGroupNames.includes(g));
-      if (!inGroup) {
-        return false;
-      }
-    }
+    // restrict_to_groups temporarily removed for debugging.
+    // Re-add when confirmed working:
+    //
+    // const restrictToGroups = settings.restrict_to_groups
+    //   ?.split(",")
+    //   .map((g) => g.trim().toLowerCase())
+    //   .filter(Boolean);
+    // if (restrictToGroups?.length > 0) {
+    //   const userGroupNames =
+    //     this.currentUser.groups?.map((g) => g.name.toLowerCase()) ?? [];
+    //   const inGroup = restrictToGroups.some((g) => userGroupNames.includes(g));
+    //   if (!inGroup) {
+    //     return false;
+    //   }
+    // }
 
     // If whisper_only is enabled, only show the button when actively whispering
     if (settings.whisper_only && !this.composer.isWhispering) {

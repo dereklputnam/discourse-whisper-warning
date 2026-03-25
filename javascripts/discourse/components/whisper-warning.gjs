@@ -49,6 +49,17 @@ export default class WhisperWarning extends Component {
       return false;
     }
 
+    // If a group restriction is set, only show for members of that group
+    const restrictToGroup = settings.restrict_to_group?.trim();
+    if (restrictToGroup) {
+      const inGroup = this.currentUser.groups?.some(
+        (g) => g.name === restrictToGroup
+      );
+      if (!inGroup) {
+        return false;
+      }
+    }
+
     // If whisper_only is enabled, only show the button when actively whispering
     if (settings.whisper_only && !this.composer.isWhispering) {
       return false;

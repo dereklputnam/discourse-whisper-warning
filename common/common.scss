@@ -17,8 +17,8 @@
   }
 
   &.public {
-    color: var(--quaternary);
-    background-color: var(--quaternary-low);
-    box-shadow: 0 0 0 2px var(--quaternary-medium);
+    color: var(--highlight-high);
+    background-color: var(--highlight-low);
+    box-shadow: 0 0 0 2px var(--highlight-medium);
   }
 }

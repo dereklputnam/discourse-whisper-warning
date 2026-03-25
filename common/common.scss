@@ -1,4 +1,3 @@
-/* stylelint-disable scss/no-global-function-names */
 #reply-control .reply-to .whisper-hint {
   margin: 0 0 0 1em;
   padding: 2px 8px;
@@ -10,24 +9,24 @@
   }
 
   &.whispering {
-    color: var(--tertiary);
-    background-color: var(--tertiary-low);
-    box-shadow: 0 0 0 2px var(--tertiary-medium);
+    color: $whisper_text_color;
+    background-color: $whisper_bg_color;
+    box-shadow: 0 0 0 2px $whisper_border_color;
     opacity: 0.75;
 
     .d-icon {
-      color: var(--tertiary);
+      color: $whisper_text_color;
     }
   }
 
   &.public {
-    color: darken($color: goldenrod, $amount: 20);
-    background-color: gold;
-    box-shadow: 0 0 0 2px darken($color: goldenrod, $amount: 5);
+    color: $public_text_color;
+    background-color: $public_bg_color;
+    box-shadow: 0 0 0 2px $public_border_color;
     opacity: 0.75;
 
     .d-icon {
-      color: darken($color: goldenrod, $amount: 20);
+      color: $public_text_color;
     }
   }
 }

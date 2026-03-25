@@ -22,21 +22,25 @@ export default class WhisperWarning extends Component {
       return false;
     }
 
-    // restrict_to_groups temporarily removed for debugging.
-    // Re-add when confirmed working:
-    //
-    // const restrictToGroups = settings.restrict_to_groups
-    //   ?.split(",")
-    //   .map((g) => g.trim().toLowerCase())
-    //   .filter(Boolean);
-    // if (restrictToGroups?.length > 0) {
-    //   const userGroupNames =
-    //     this.currentUser.groups?.map((g) => g.name.toLowerCase()) ?? [];
-    //   const inGroup = restrictToGroups.some((g) => userGroupNames.includes(g));
-    //   if (!inGroup) {
-    //     return false;
-    //   }
-    // }
+    // list_type: group may return an array or a comma-separated string
+    // depending on the Discourse version — handle both
+    const rawSetting = settings.restrict_to_groups;
+    const restrictToGroups = (
+      Array.isArray(rawSetting)
+        ? rawSetting
+        : (rawSetting?.split(",") ?? [])
+    )
+      .map((g) => String(g).trim().toLowerCase())
+      .filter(Boolean);
+
+    if (restrictToGroups.length > 0) {
+      const userGroupNames =
+        this.currentUser.groups?.map((g) => g.name.toLowerCase()) ?? [];
+      const inGroup = restrictToGroups.some((g) => userGroupNames.includes(g));
+      if (!inGroup) {
+        return false;
+      }
+    }
 
     // If whisper_only is enabled, only show the button when actively whispering
     if (settings.whisper_only && !this.composer.isWhispering) {

@@ -37,14 +37,24 @@ export default class WhisperWarning extends Component {
     const isNotSharedDraft =
       this.args.outletArgs.model.get("action") !== "createSharedDraft";
 
-    return (
+    const contextMatches =
       (canWhisper &&
         isNotNewTopic &&
         isNotNewPM &&
         isNotSharedDraft &&
         readRestricted) ||
-      (isPM && isInInboxGroup && canWhisper)
-    );
+      (isPM && isInInboxGroup && canWhisper);
+
+    if (!contextMatches) {
+      return false;
+    }
+
+    // If whisper_only is enabled, only show the button when actively whispering
+    if (settings.whisper_only && !this.composer.isWhispering) {
+      return false;
+    }
+
+    return true;
   }
 
   get translatedLabel() {

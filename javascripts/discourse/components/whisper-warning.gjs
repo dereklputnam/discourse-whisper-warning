@@ -49,12 +49,14 @@ export default class WhisperWarning extends Component {
       return false;
     }
 
-    // If a group restriction is set, only show for members of that group
-    const restrictToGroup = settings.restrict_to_group?.trim();
-    if (restrictToGroup) {
-      const inGroup = this.currentUser.groups?.some(
-        (g) => g.name === restrictToGroup
-      );
+    // If one or more groups are specified, user must be a member of at least one
+    const restrictToGroups = settings.restrict_to_groups
+      ?.split(",")
+      .map((g) => g.trim())
+      .filter(Boolean);
+    if (restrictToGroups?.length > 0) {
+      const userGroupNames = this.currentUser.groups?.map((g) => g.name) ?? [];
+      const inGroup = restrictToGroups.some((g) => userGroupNames.includes(g));
       if (!inGroup) {
         return false;
       }

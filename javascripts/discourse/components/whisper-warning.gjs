@@ -22,13 +22,11 @@ export default class WhisperWarning extends Component {
       return false;
     }
 
-    // list_type: group may return an array or a comma-separated string,
-    // and may store group IDs or names depending on Discourse version
-    const rawSetting = settings.restrict_to_groups;
+    // If groups specified, user must be in at least one.
+    // list_type: group may store IDs or names — check both.
+    const rawGroups = settings.restrict_to_groups;
     const restrictToGroups = (
-      Array.isArray(rawSetting)
-        ? rawSetting
-        : (rawSetting?.split(",") ?? [])
+      Array.isArray(rawGroups) ? rawGroups : (rawGroups?.split(",") ?? [])
     )
       .map((g) => String(g).trim())
       .filter(Boolean);
@@ -48,7 +46,37 @@ export default class WhisperWarning extends Component {
       }
     }
 
-    // If whisper_only is enabled, only show the button when actively whispering
+    // If categories specified, topic must be in at least one.
+    // list_type: category may store IDs or slugs — check both.
+    const rawCategories = settings.restrict_to_categories;
+    const restrictToCategories = (
+      Array.isArray(rawCategories)
+        ? rawCategories
+        : (rawCategories?.split(",") ?? [])
+    )
+      .map((c) => String(c).trim())
+      .filter(Boolean);
+
+    if (restrictToCategories.length > 0) {
+      const category = this.args.outletArgs.model.category;
+      if (!category) {
+        return false;
+      }
+      const catId = category.get ? category.get("id") : category.id;
+      const catSlug = category.get ? category.get("slug") : category.slug;
+      const inCategory = restrictToCategories.some((c) => {
+        const asId = parseInt(c, 10);
+        return (
+          (catSlug && catSlug.toLowerCase() === c.toLowerCase()) ||
+          (!isNaN(asId) && catId === asId)
+        );
+      });
+      if (!inCategory) {
+        return false;
+      }
+    }
+
+    // If whisper_only is enabled, only show when actively whispering
     if (settings.whisper_only && !this.composer.isWhispering) {
       return false;
     }

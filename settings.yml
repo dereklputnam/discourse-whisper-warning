@@ -10,3 +10,10 @@ restrict_to_groups:
   list_type: group
   label: "Restrict to groups"
   description: "Limit the warning to members of specific groups. Leave empty to show for all users who can whisper."
+
+restrict_to_categories:
+  default: ""
+  type: list
+  list_type: category
+  label: "Restrict to categories"
+  description: "Only show the warning when replying in specific categories. Leave empty to show in all categories."

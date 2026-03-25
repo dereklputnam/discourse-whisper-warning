@@ -3,30 +3,56 @@
   padding: 2px 8px;
   font-size: var(--font-down-2);
   border-radius: 10px;
+  opacity: 0.75;
 
   .d-icon {
     margin-right: 4px;
+    color: inherit;
   }
 
   &.whispering {
-    color: $whisper_text_color;
-    background-color: $whisper_bg_color;
-    box-shadow: 0 0 0 2px $whisper_border_color;
-    opacity: 0.75;
-
-    .d-icon {
-      color: $whisper_text_color;
+    @if $whisper_color == "purple" {
+      color: #6f42c1;
+      background-color: #e9d8fd;
+      box-shadow: 0 0 0 2px #b794f4;
+    } @else if $whisper_color == "blue" {
+      color: #004085;
+      background-color: #cce5ff;
+      box-shadow: 0 0 0 2px #b8daff;
+    } @else if $whisper_color == "yellow" {
+      color: #856404;
+      background-color: #fff3cd;
+      box-shadow: 0 0 0 2px #ffc107;
+    } @else {
+      // "theme" default — uses Discourse color scheme variables
+      color: var(--tertiary);
+      background-color: var(--tertiary-low);
+      box-shadow: 0 0 0 2px var(--tertiary-medium);
     }
   }
 
   &.public {
-    color: $public_text_color;
-    background-color: $public_bg_color;
-    box-shadow: 0 0 0 2px $public_border_color;
-    opacity: 0.75;
-
-    .d-icon {
-      color: $public_text_color;
+    @if $public_color == "green" {
+      color: #155724;
+      background-color: #d4edda;
+      box-shadow: 0 0 0 2px #c3e6cb;
+    } @else if $public_color == "blue" {
+      color: #004085;
+      background-color: #cce5ff;
+      box-shadow: 0 0 0 2px #b8daff;
+    } @else if $public_color == "red" {
+      color: #721c24;
+      background-color: #f8d7da;
+      box-shadow: 0 0 0 2px #f5c6cb;
+    } @else if $public_color == "orange" {
+      color: #7d3c00;
+      background-color: #ffe5d0;
+      box-shadow: 0 0 0 2px #fd7e14;
+    } @else {
+      // "gold" default
+      color: #7a5800;
+      background-color: gold;
+      box-shadow: 0 0 0 2px #b8860b;
     }
   }
 }

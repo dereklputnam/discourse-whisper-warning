@@ -4,32 +4,23 @@ whisper_only:
   label: "Whisper only"
   description: "Only show the warning button when composing a whisper; hide it for public replies."
 
-whisper_bg_color:
-  default: "var(--tertiary-low)"
-  type: color
-  label: "Whisper background color"
+whisper_color:
+  default: "theme"
+  type: enum
+  label: "Whisper button color"
+  choices:
+    - theme
+    - purple
+    - blue
+    - yellow
 
-whisper_border_color:
-  default: "var(--tertiary-medium)"
-  type: color
-  label: "Whisper border color"
-
-whisper_text_color:
-  default: "var(--tertiary)"
-  type: color
-  label: "Whisper text & icon color"
-
-public_bg_color:
+public_color:
   default: "gold"
-  type: color
-  label: "Public reply background color"
-
-public_border_color:
-  default: "#b8860b"
-  type: color
-  label: "Public reply border color"
-
-public_text_color:
-  default: "#7a5800"
-  type: color
-  label: "Public reply text & icon color"
+  type: enum
+  label: "Public reply button color"
+  choices:
+    - gold
+    - green
+    - blue
+    - red
+    - orange

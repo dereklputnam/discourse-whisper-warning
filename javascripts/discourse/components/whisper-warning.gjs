@@ -10,78 +10,89 @@ export default class WhisperWarning extends Component {
   @service composer;
 
   get showWarning() {
-    const canWhisper = this.composer.showWhisperToggle;
-    const isNotNewTopic =
-      this.args.outletArgs.model.get("action") !== "createTopic";
-    const isNotNewPM =
-      this.args.outletArgs.model.get("action") !== "privateMessage";
-    const isNotSharedDraft =
-      this.args.outletArgs.model.get("action") !== "createSharedDraft";
+    const model = this.args.outletArgs.model;
+    const action = model.get("action");
 
-    if (!canWhisper || !isNotNewTopic || !isNotNewPM || !isNotSharedDraft) {
+    if (
+      !this.composer.showWhisperToggle ||
+      action === "createTopic" ||
+      action === "privateMessage" ||
+      action === "createSharedDraft"
+    ) {
       return false;
     }
 
-    // If groups specified, user must be in at least one.
-    // list_type: group may store IDs or names — check both.
-    const rawGroups = settings.restrict_to_groups;
-    const restrictToGroups = (
-      Array.isArray(rawGroups) ? rawGroups : (rawGroups?.split(",") ?? [])
-    )
-      .map((g) => String(g).trim())
-      .filter(Boolean);
-
-    if (restrictToGroups.length > 0) {
-      const userGroups = this.currentUser.groups ?? [];
-      const inGroup = restrictToGroups.some((g) => {
-        const asId = parseInt(g, 10);
-        return userGroups.some(
-          (ug) =>
-            ug.name.toLowerCase() === g.toLowerCase() ||
-            (!isNaN(asId) && ug.id === asId)
-        );
-      });
-      if (!inGroup) {
-        return false;
-      }
+    if (!this.#isInAllowedGroup()) {
+      return false;
     }
 
-    // If categories specified, topic must be in at least one.
-    // list_type: category may store IDs or slugs — check both.
-    const rawCategories = settings.restrict_to_categories;
-    const restrictToCategories = (
-      Array.isArray(rawCategories)
-        ? rawCategories
-        : (rawCategories?.split(",") ?? [])
-    )
-      .map((c) => String(c).trim())
-      .filter(Boolean);
-
-    if (restrictToCategories.length > 0) {
-      const category = this.args.outletArgs.model.category;
-      if (!category) {
-        return false;
-      }
-      const catId = category.get ? category.get("id") : category.id;
-      const catSlug = category.get ? category.get("slug") : category.slug;
-      const inCategory = restrictToCategories.some((c) => {
-        const asId = parseInt(c, 10);
-        return (
-          (catSlug && catSlug.toLowerCase() === c.toLowerCase()) ||
-          (!isNaN(asId) && catId === asId)
-        );
-      });
-      if (!inCategory) {
-        return false;
-      }
+    if (!this.#isInAllowedCategory()) {
+      return false;
     }
 
-    // If whisper_only is enabled, only show when actively whispering
     if (settings.whisper_only && !this.composer.isWhispering) {
       return false;
     }
 
     return true;
+  }
+
+  // Returns true if restrict_to_groups is empty or the current user
+  // is a member of at least one of the specified groups.
+  // Matches by both group ID and name to handle either storage format.
+  #isInAllowedGroup() {
+    const raw = settings.restrict_to_groups;
+    const groups = this.#parseListSetting(raw);
+
+    if (groups.length === 0) {
+      return true;
+    }
+
+    const userGroups = this.currentUser.groups ?? [];
+    return groups.some((g) => {
+      const asId = Number.parseInt(g, 10);
+      return userGroups.some(
+        (ug) =>
+          ug.name.toLowerCase() === g.toLowerCase() ||
+          (!Number.isNaN(asId) && ug.id === asId)
+      );
+    });
+  }
+
+  // Returns true if restrict_to_categories is empty or the current topic's
+  // category matches at least one of the specified categories.
+  // Matches by both category ID and slug to handle either storage format.
+  #isInAllowedCategory() {
+    const raw = settings.restrict_to_categories;
+    const categories = this.#parseListSetting(raw);
+
+    if (categories.length === 0) {
+      return true;
+    }
+
+    const category = this.args.outletArgs.model.category;
+    if (!category) {
+      return false;
+    }
+
+    const catId = category.get ? category.get("id") : category.id;
+    const catSlug = category.get ? category.get("slug") : category.slug;
+
+    return categories.some((c) => {
+      const asId = Number.parseInt(c, 10);
+      return (
+        (catSlug && catSlug.toLowerCase() === c.toLowerCase()) ||
+        (!Number.isNaN(asId) && catId === asId)
+      );
+    });
+  }
+
+  // Handles both array and comma-separated string values, as list settings
+  // may return either format depending on the Discourse version.
+  #parseListSetting(value) {
+    return (Array.isArray(value) ? value : (value?.split(",") ?? []))
+      .map((v) => String(v).trim())
+      .filter(Boolean);
   }
 
   get icon() {

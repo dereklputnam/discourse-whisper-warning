@@ -1,3 +1,5 @@
 whisper_only:
   default: false
   type: bool
+  label: "Whisper only"
+  description: "Only show the warning button when composing a whisper; hide it for public replies."

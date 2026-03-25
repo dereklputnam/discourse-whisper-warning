@@ -1,0 +1,3 @@
+whisper_only:
+  default: false
+  type: bool

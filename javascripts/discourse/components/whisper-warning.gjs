@@ -29,10 +29,6 @@ export default class WhisperWarning extends Component {
 
     const readRestricted =
       this.args.outletArgs.model.category?.get("read_restricted");
-    const isWhisperWarningGroupMember =
-      this.currentUser.groups?.filter((group) => {
-        return group.name === "accidentalloudmouths";
-      }).length > 0;
     const canWhisper = this.composer.showWhisperToggle;
     const isNotNewTopic =
       this.args.outletArgs.model.get("action") !== "createTopic";
@@ -46,9 +42,8 @@ export default class WhisperWarning extends Component {
         isNotNewTopic &&
         isNotNewPM &&
         isNotSharedDraft &&
-        isWhisperWarningGroupMember &&
         readRestricted) ||
-      (isPM && isInInboxGroup && canWhisper && isWhisperWarningGroupMember)
+      (isPM && isInInboxGroup && canWhisper)
     );
   }
 

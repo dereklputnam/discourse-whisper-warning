@@ -4,9 +4,10 @@ whisper_only:
   label: "Whisper only"
   description: "Only show the warning button when composing a whisper; hide it for public replies."
 
-restrict_to_groups:
-  default: ""
-  type: list
-  list_type: group
-  label: "Restrict to groups"
-  description: "Limit the warning to members of specific groups. Leave empty to show for all users who can whisper."
+# restrict_to_groups temporarily removed for debugging — re-add when confirmed working:
+# restrict_to_groups:
+#   default: ""
+#   type: list
+#   list_type: group
+#   label: "Restrict to groups"
+#   description: "Limit the warning to members of specific groups. Leave empty to show for all users who can whisper."

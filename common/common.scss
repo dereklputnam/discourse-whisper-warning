@@ -1,4 +1,3 @@
-/* stylelint-disable scss/no-global-function-names */
 #reply-control .reply-to .whisper-hint {
   margin: 0 0 0 1em;
   padding: 2px 8px;
@@ -18,8 +17,8 @@
   }
 
   &.public {
-    color: darken($color: goldenrod, $amount: 20);
-    background-color: gold;
-    box-shadow: 0 0 0 2px darken($color: goldenrod, $amount: 5);
+    color: var(--quaternary);
+    background-color: var(--quaternary-low);
+    box-shadow: 0 0 0 2px var(--quaternary-medium);
   }
 }

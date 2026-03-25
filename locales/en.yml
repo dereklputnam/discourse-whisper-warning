@@ -3,7 +3,3 @@ en:
     description: "This component better distinguishes a public reply from a whisper."
   public_reply: "reply will be visible"
   whispering: "whispering"
-  theme_settings:
-    whisper_only:
-      title: "Whisper only"
-      description: "Only show the warning button when composing a whisper; hide it for public replies."

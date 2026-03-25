@@ -11,22 +11,22 @@ export default class WhisperWarning extends Component {
 
   get showWarning() {
     const model = this.args.outletArgs.model;
-    const action = model.get("action");
+    const composerAction = model.get("action");
 
     if (
       !this.composer.showWhisperToggle ||
-      action === "createTopic" ||
-      action === "privateMessage" ||
-      action === "createSharedDraft"
+      composerAction === "createTopic" ||
+      composerAction === "privateMessage" ||
+      composerAction === "createSharedDraft"
     ) {
       return false;
     }
 
-    if (!this.#isInAllowedGroup()) {
+    if (!this.isInAllowedGroup) {
       return false;
     }
 
-    if (!this.#isInAllowedCategory()) {
+    if (!this.isInAllowedCategory) {
       return false;
     }
 
@@ -37,12 +37,11 @@ export default class WhisperWarning extends Component {
     return true;
   }
 
-  // Returns true if restrict_to_groups is empty or the current user
-  // is a member of at least one of the specified groups.
-  // Matches by both group ID and name to handle either storage format.
-  #isInAllowedGroup() {
-    const raw = settings.restrict_to_groups;
-    const groups = this.#parseListSetting(raw);
+  // Returns true if restrict_to_groups is empty, or the current user is a
+  // member of at least one specified group. Matches by both group ID and name
+  // to handle either storage format from the list_type: group setting.
+  get isInAllowedGroup() {
+    const groups = this.parseListSetting(settings.restrict_to_groups);
 
     if (groups.length === 0) {
       return true;
@@ -59,12 +58,11 @@ export default class WhisperWarning extends Component {
     });
   }
 
-  // Returns true if restrict_to_categories is empty or the current topic's
-  // category matches at least one of the specified categories.
-  // Matches by both category ID and slug to handle either storage format.
-  #isInAllowedCategory() {
-    const raw = settings.restrict_to_categories;
-    const categories = this.#parseListSetting(raw);
+  // Returns true if restrict_to_categories is empty, or the current topic's
+  // category matches at least one specified category. Matches by both category
+  // ID and slug to handle either storage format from the list_type: category setting.
+  get isInAllowedCategory() {
+    const categories = this.parseListSetting(settings.restrict_to_categories);
 
     if (categories.length === 0) {
       return true;
@@ -87,9 +85,10 @@ export default class WhisperWarning extends Component {
     });
   }
 
+  // Normalises a list setting value to a trimmed, non-empty string array.
   // Handles both array and comma-separated string values, as list settings
   // may return either format depending on the Discourse version.
-  #parseListSetting(value) {
+  parseListSetting(value) {
     return (Array.isArray(value) ? value : (value?.split(",") ?? []))
       .map((v) => String(v).trim())
       .filter(Boolean);

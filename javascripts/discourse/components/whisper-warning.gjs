@@ -22,21 +22,27 @@ export default class WhisperWarning extends Component {
       return false;
     }
 
-    // list_type: group may return an array or a comma-separated string
-    // depending on the Discourse version — handle both
+    // list_type: group may return an array or a comma-separated string,
+    // and may store group IDs or names depending on Discourse version
     const rawSetting = settings.restrict_to_groups;
     const restrictToGroups = (
       Array.isArray(rawSetting)
         ? rawSetting
         : (rawSetting?.split(",") ?? [])
     )
-      .map((g) => String(g).trim().toLowerCase())
+      .map((g) => String(g).trim())
       .filter(Boolean);
 
     if (restrictToGroups.length > 0) {
-      const userGroupNames =
-        this.currentUser.groups?.map((g) => g.name.toLowerCase()) ?? [];
-      const inGroup = restrictToGroups.some((g) => userGroupNames.includes(g));
+      const userGroups = this.currentUser.groups ?? [];
+      const inGroup = restrictToGroups.some((g) => {
+        const asId = parseInt(g, 10);
+        return userGroups.some(
+          (ug) =>
+            ug.name.toLowerCase() === g.toLowerCase() ||
+            (!isNaN(asId) && ug.id === asId)
+        );
+      });
       if (!inGroup) {
         return false;
       }

@@ -57,6 +57,10 @@ export default class WhisperWarning extends Component {
     return true;
   }
 
+  get icon() {
+    return this.composer.isWhispering ? "far-eye-slash" : "far-eye";
+  }
+
   get translatedLabel() {
     if (this.composer.isWhispering) {
       return i18n(themePrefix("whispering"));
@@ -75,7 +79,7 @@ export default class WhisperWarning extends Component {
       <DButton
         @preventFocus={{true}}
         @action={{this.toggleWhisper}}
-        @icon="far-eye-slash"
+        @icon={{this.icon}}
         class={{concatClass
           "whisper-hint"
           (if this.composer.isWhispering "whispering" "public")

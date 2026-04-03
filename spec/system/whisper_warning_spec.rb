@@ -5,10 +5,11 @@ RSpec.describe "Whisper Warning" do
   fab!(:moderator)
   fab!(:group)
   fab!(:category)
-  fab!(:topic) { Fabricate(:topic, category: category) }
+  fab!(:topic) { Fabricate(:post, topic: Fabricate(:topic, category: category)).topic }
+
+  let!(:theme) { upload_theme_or_component }
 
   before do
-    upload_theme_or_component
     group.add(moderator)
     sign_in(moderator)
   end
@@ -73,7 +74,7 @@ RSpec.describe "Whisper Warning" do
   end
 
   context "with restrict_to_categories set" do
-    fab!(:other_topic) { Fabricate(:topic) }
+    fab!(:other_topic) { Fabricate(:post).topic }
 
     before { theme.update_setting(:restrict_to_categories, category.slug) }
 

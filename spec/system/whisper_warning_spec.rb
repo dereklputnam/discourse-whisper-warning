@@ -10,6 +10,7 @@ RSpec.describe "Whisper Warning" do
   let!(:theme) { upload_theme_or_component }
 
   before do
+    SiteSetting.whispers_allowed_groups = "#{Group::AUTO_GROUPS[:staff]}"
     group.add(moderator)
     sign_in(moderator)
   end

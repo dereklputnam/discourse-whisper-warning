@@ -16,7 +16,7 @@ RSpec.describe "Whisper Warning" do
 
   def open_composer
     visit "/t/#{topic.slug}/#{topic.id}"
-    find("#reply-button").click
+    find("#topic-footer-buttons .create").click
     expect(page).to have_css("#reply-control")
   end
 
@@ -85,7 +85,7 @@ RSpec.describe "Whisper Warning" do
 
     it "hides when replying in an unspecified category" do
       visit "/t/#{other_topic.slug}/#{other_topic.id}"
-      find("#reply-button").click
+      find("#topic-footer-buttons .create").click
       expect(page).not_to have_css(".whisper-hint")
     end
   end

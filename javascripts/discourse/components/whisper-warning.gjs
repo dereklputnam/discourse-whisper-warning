@@ -16,9 +16,13 @@ export default class WhisperWarning extends Component {
     if (
       !this.composer.showWhisperToggle ||
       composerAction === "createTopic" ||
-      composerAction === "privateMessage" ||
       composerAction === "createSharedDraft"
     ) {
+      return false;
+    }
+
+    // Block new PMs (but allow replies to existing PMs)
+    if (composerAction === "privateMessage") {
       return false;
     }
 
@@ -26,15 +30,59 @@ export default class WhisperWarning extends Component {
       return false;
     }
 
-    if (!this.isInAllowedCategory) {
-      return false;
-    }
-
     if (settings.whisper_only && !this.composer.isWhispering) {
       return false;
     }
 
-    return true;
+    return this.matchesContext;
+  }
+
+  // At least one context filter must match. If no context filters are
+  // configured, show everywhere.
+  get matchesContext() {
+    const hasAnyContextFilter =
+      settings.show_in_read_restricted_categories ||
+      settings.show_in_group_pms ||
+      this.parseListSetting(settings.restrict_to_categories).length > 0;
+
+    if (!hasAnyContextFilter) {
+      return true;
+    }
+
+    if (settings.show_in_read_restricted_categories && this.isReadRestricted) {
+      return true;
+    }
+
+    if (settings.show_in_group_pms && this.isGroupPMWithUser) {
+      return true;
+    }
+
+    if (this.isInExplicitCategoryList) {
+      return true;
+    }
+
+    return false;
+  }
+
+  get isReadRestricted() {
+    return !!this.args.outletArgs.model.category?.get("read_restricted");
+  }
+
+  get isGroupPMWithUser() {
+    const topic = this.args.outletArgs.model.topic;
+    if (topic?.get("archetype") !== "private_message") {
+      return false;
+    }
+
+    const allowedGroups = topic.get("allowedGroups");
+    if (!allowedGroups) {
+      return false;
+    }
+
+    const userGroups = this.currentUser.groups ?? [];
+    return allowedGroups.some((ag) =>
+      userGroups.some((ug) => ug.name === ag.name)
+    );
   }
 
   // Returns true if restrict_to_groups is empty, or the current user is a
@@ -58,14 +106,13 @@ export default class WhisperWarning extends Component {
     });
   }
 
-  // Returns true if restrict_to_categories is empty, or the current topic's
-  // category matches at least one specified category. Matches by both category
-  // ID and slug to handle either storage format from the list_type: category setting.
-  get isInAllowedCategory() {
+  // Returns true if the current topic's category is in the explicit
+  // restrict_to_categories list. Matches by both category ID and slug.
+  get isInExplicitCategoryList() {
     const categories = this.parseListSetting(settings.restrict_to_categories);
 
     if (categories.length === 0) {
-      return true;
+      return false;
     }
 
     const category = this.args.outletArgs.model.category;
@@ -86,8 +133,6 @@ export default class WhisperWarning extends Component {
   }
 
   // Normalises a list setting value to a trimmed, non-empty string array.
-  // Handles both array and comma-separated string values, as list settings
-  // may return either format depending on the Discourse version.
   parseListSetting(value) {
     return (Array.isArray(value) ? value : (value?.split(",") ?? []))
       .map((v) => String(v).trim())

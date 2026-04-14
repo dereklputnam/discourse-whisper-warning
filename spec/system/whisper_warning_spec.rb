@@ -124,7 +124,7 @@ RSpec.describe "Whisper Warning" do
   end
 
   context "with restrict_to_categories set" do
-    fab!(:extra_category) { Fabricate(:category) }
+    fab!(:extra_category, :category)
     fab!(:extra_topic) do
       Fabricate(:post, topic: Fabricate(:topic, category: extra_category)).topic
     end
